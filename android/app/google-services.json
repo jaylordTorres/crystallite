@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "927269322330",
+    "firebase_url": "https://practice-project-c9721.firebaseio.com",
+    "project_id": "practice-project-c9721",
+    "storage_bucket": "practice-project-c9721.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:927269322330:android:c98dacf5ba48f992",
+        "android_client_info": {
+          "package_name": "com.fcmnotify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "927269322330-ak45b75crbn4scbgl42978v80hs5rtvp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCb4N7k1npnA-OiE0ORIEfPi4LZkV0_16Q"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
