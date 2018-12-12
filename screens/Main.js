@@ -23,7 +23,6 @@ import {
   Content,
   Icon
 } from "native-base";
-
 import FlashMessage, {
   showMessage,
   hideMessage
@@ -35,6 +34,7 @@ import axios from "axios";
 import AntIcons from "react-native-vector-icons/AntDesign";
 import { makeTime } from './../util/time.helper'
 const DDate = Date;
+// import switch_example from "./switch/switch_example";
 
 const DATE_FORMAT = 'YYYY-MM-DD';
 const DATETIME_FORMAT = 'YYYY/MM/DD HH:mm';
@@ -535,14 +535,18 @@ export default class Main extends Component {
             </ListItem>
           </List>
           <Text>{`Notifications Allow : ${this.state.switch1Value}`}</Text>
+          {console.log(this.state.switch1Value)}
           <Switch
-          onValueChange={this.toggleSwitch1}
-          value={this.state.switch1Value}
+            onValueChange={this.toggleSwitch1}
+            value={this.state.switch1Value}
           />
+          {/* <SwitchExample
+            toggleSwitch1={this.toggleSwitch1}
+            switch1Value={this.state.switch1Value}
+          /> */}
           <FlashMessage position="top" />
         </Content>
       </Container>
-
       // </View>
     );
   }
@@ -556,15 +560,15 @@ export default class Main extends Component {
     //   { cancelable: false },
     // );
 
-    // showMessage({
-    //   message: body ? body : "No Device is off in between 2 and 9 hours",
-    //   description: title,
-    //   type: "success",
-    //   icon: "success",
-    //   duration: 2000,
-    //   floating: true,
-    //   hideStatusBar: true
-    // });
+    showMessage({
+      message: body ? body : "No Device is off in between 2 and 9 hours",
+      description: title,
+      type: "success",
+      icon: "success",
+      duration: 2000,
+      floating: false,
+      hideStatusBar: false
+    });
   }
 }
 
