@@ -26,7 +26,7 @@ import {
 import update from "immutability-helper";
 
 import { LineChart } from "react-native-charts-wrapper";
-import LineChartScreen from "./charts/LineChartScreen";
+import ChartsListScreen from "./charts/ChartsListScreen";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -40,7 +40,7 @@ export default class ChildrenDashboard extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <LineChartScreen />
+        <ChartsListScreen />
       </View>
       // <Container>
       //   <Header

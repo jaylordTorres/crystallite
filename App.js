@@ -32,19 +32,7 @@ import UnmarkedAttendance from "./screens/Attendance/UnmarkedAttendance";
 import ChildrenDashboard from "./screens/ChildrenDashboard";
 
 const { width } = Dimensions.get("window");
-// create our app's navigation stack
-// const App = createSwitchNavigator(
-//   {
-//     Loading,
-//     SignUp,
-//     Login,
-//     Main
-//   },
-//   {
-//     initialRouteName: "Loading"
-//   }
-// );
-// export default App;
+
 const AuthStackNavigator = createSwitchNavigator({
   Login: Login,
   SignUp: SignUp

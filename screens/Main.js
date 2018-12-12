@@ -23,7 +23,6 @@ import {
   Content,
   Icon
 } from "native-base";
-
 import FlashMessage, {
   showMessage,
   hideMessage
@@ -33,6 +32,7 @@ import BackgroundTimer from "react-native-background-timer";
 import moment from "moment";
 import axios from "axios";
 import AntIcons from "react-native-vector-icons/AntDesign";
+// import switch_example from "./switch/switch_example";
 
 const CurrentDate = moment(Date().now).format("YYYY-MM-DD");
 const currentTime = moment("2018-11-20 23:00 ").format("HH:mm:ss");
@@ -560,10 +560,15 @@ export default class Main extends Component {
               </TouchableOpacity>
             </ListItem>
           </List>
-          {/* <Text>{`Notifications Allow : ${this.state.switch1Value}`}</Text>
+          <Text>{`Notifications Allow : ${this.state.switch1Value}`}</Text>
+          {console.log(this.state.switch1Value)}
           <Switch
             onValueChange={this.toggleSwitch1}
             value={this.state.switch1Value}
+          />
+          {/* <SwitchExample
+            toggleSwitch1={this.toggleSwitch1}
+            switch1Value={this.state.switch1Value}
           /> */}
           <FlashMessage position="top" />
         </Content>
@@ -588,8 +593,8 @@ export default class Main extends Component {
       type: "success",
       icon: "success",
       duration: 2000,
-      floating: true,
-      hideStatusBar: true
+      floating: false,
+      hideStatusBar: false
     });
   }
 }
