@@ -33,16 +33,17 @@ import BackgroundTimer from "react-native-background-timer";
 import moment from "moment";
 import axios from "axios";
 import AntIcons from "react-native-vector-icons/AntDesign";
+import { makeTime } from './../util/time.helper'
+const DDate = Date;
 
-const CurrentDate = moment(Date().now).format("YYYY-MM-DD");
-const currentTime = moment("2018-11-20 23:00 ").format("HH:mm:ss");
-const currentTimeX = moment(Date().now).format("x");
-console.log(currentTimeX);
+const DATE_FORMAT = 'YYYY-MM-DD';
+const DATETIME_FORMAT = 'YYYY/MM/DD HH:mm';
 
 export default class Main extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      res: {},
       currentUser: null,
       token: "",
       deviceData: [],
@@ -52,7 +53,8 @@ export default class Main extends Component {
       appState: AppState.currentState,
       allowNotification: "",
       checkNotification: true,
-      switch1Value: false
+      switch1Value: false,
+      count: 0
     };
   }
 
@@ -85,77 +87,49 @@ export default class Main extends Component {
         axios
           .get(`http://173.82.185.123:1111/device_pulse/bitspulsejson`)
           .then(res => {
+            const now = new DDate()
+            const currentDate = moment(now).format(DATE_FORMAT);
+            const currentTime = now.getTime()
+
+            // get date and time
+            const deviceID = 'OPK6100056093000004' // TODO must change to dynamic
             const deviceData = res.data["device_data"];
-
-            const serverDate = moment(
-              deviceData["OPK6100056093000004"].last_active
-            ).format("YYYY-MM-DD");
-            const serverTime = moment(
-              deviceData["OPK6100056093000004"].last_active
-            ).format("HH:mm:ss");
-            console.log(
-              "Server Date " + serverDate + " Server Time " + serverTime
-            );
-
-            console.log(currentTime);
-            const server = serverDate + " " + serverTime;
-            // const current = CurreentDate + " " + currentTime;
-            const current = CurrentDate + " " + currentTime;
-            console.log(
-              "Current Date " + CurrentDate + " Current Time " + currentTime
-            );
-
+            const lastActive = new DDate(deviceData[deviceID]['last_active'])
+            const lastActiveTime = makeTime(deviceData[deviceID]['last_active'])
+            const serverLastActive = moment(lastActiveTime).format(DATE_FORMAT);
             this.setState({
               deviceData: deviceData,
-              serverTime: server,
-              currentTime: current
+              serverTime: lastActive,
+              currentTime: now
             });
-
-            var endTime = current;
+            var endTime = new DDate().getTime()
             var NotifyList = [];
             var htmlDummy = "";
-            console.log("CurrentDate", CurrentDate);
-            var serverLastActive = moment(last_active_time).format(
-              "YYYY/MM/DD"
-            );
-            console.log(
-              "fixedTime",
-              moment(JSON.stringify(CurrentDate) + "02:00").format("x")
-            );
-            var fixedTime = moment(
-              JSON.stringify(CurrentDate) + "02:00"
-            ).format("x");
-            console.log(currentTimeX, fixedTime, currentTimeX >= fixedTime);
-            if (currentTimeX >= fixedTime) {
+
+            // every 2 hour, if this active will true here
+            after2hours = new DDate()
+            after2hours.setHours(new DDate().getHours() + 2)
+            this.setState({error: `${after2hours.getTime()}, ${lastActiveTime}`
+            })
+            if (after2hours.getTime() >= lastActiveTime) { // end of no time
+              console.log('above 2 hours')
               var device_count = 0;
               for (key in deviceData) {
                 var last_active_time = deviceData[key].last_active;
 
                 if (last_active_time != "None") {
-                  var startTime = moment(last_active_time).format(
-                    "YYYY/MM/DD HH:mm"
-                  );
-                  var device_active_date = moment(last_active_time).format(
-                    "YYYY-MM-DD"
-                  );
-                  var hours = moment
-                    .duration(
-                      moment(endTime, "YYYY/MM/DD HH:mm").diff(
-                        moment(startTime, "YYYY/MM/DD HH:mm")
-                      )
-                    )
-                    .asHours();
-                  console.log("hours", hours);
-                  if (CurrentDate == device_active_date) {
+                  const keyTime = makeTime(deviceData[key].last_active)
+                  var startTime = moment(keyTime).format(DATETIME_FORMAT);
+                  var device_active_date = moment(new Date(keyTime).getTime()).format(DATE_FORMAT);
+                  var hours =  now.getHours() - new Date(keyTime).getHours()
+
+                  if (currentDate == device_active_date) {
                     if (hours > 2 && hours < 11) {
                       NotifyList.push(key);
                       htmlDummy +=
-                        key +
-                        ": " +
-                        "LastActive: " +
-                        last_active_time +
-                        " Difference : " +
-                        hours +
+                        key + ": " +
+                        "LastActive: " + last_active_time +
+                        " Difference : " + hours +
                         "\n \n";
                       device_count++;
                     }
@@ -206,7 +180,7 @@ export default class Main extends Component {
                 // );
               }
             } else {
-              console.log("Hours Difference less than 2 " + hours);
+              console.log("Hours Difference less than 2 ");
               axios.post(
                 "https://fcm.googleapis.com/fcm/send",
                 {
@@ -560,11 +534,11 @@ export default class Main extends Component {
               </TouchableOpacity>
             </ListItem>
           </List>
-          {/* <Text>{`Notifications Allow : ${this.state.switch1Value}`}</Text>
+          <Text>{`Notifications Allow : ${this.state.switch1Value}`}</Text>
           <Switch
-            onValueChange={this.toggleSwitch1}
-            value={this.state.switch1Value}
-          /> */}
+          onValueChange={this.toggleSwitch1}
+          value={this.state.switch1Value}
+          />
           <FlashMessage position="top" />
         </Content>
       </Container>
@@ -582,15 +556,15 @@ export default class Main extends Component {
     //   { cancelable: false },
     // );
 
-    showMessage({
-      message: body ? body : "No Device is off in between 2 and 9 hours",
-      description: title,
-      type: "success",
-      icon: "success",
-      duration: 2000,
-      floating: true,
-      hideStatusBar: true
-    });
+    // showMessage({
+    //   message: body ? body : "No Device is off in between 2 and 9 hours",
+    //   description: title,
+    //   type: "success",
+    //   icon: "success",
+    //   duration: 2000,
+    //   floating: true,
+    //   hideStatusBar: true
+    // });
   }
 }
 
